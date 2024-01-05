@@ -13,7 +13,7 @@ import os
 
 app = Flask(__name__)
 
-cors = CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000"]}})
+cors = CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://wellnessmate.vercel.app"]}})
 
 
 user_variable_name = "USERNAME"

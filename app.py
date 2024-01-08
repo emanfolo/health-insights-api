@@ -24,14 +24,14 @@ cors = CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "ht
 # user = os.environ.get(user_variable_name)
 # password_variable_name = "PASSWORD"
 # password = os.environ.get(password_variable_name)
-uri = f'mongodb+srv://emanUser:viewingPassword@wellnessmate.fqctlmb.mongodb.net/?retryWrites=true&w=majority'
+uri = "mongodb+srv://emanUser:viewingPassword@wellnessmate.fqctlmb.mongodb.net/?retryWrites=true&w=majority"
 
 # Database and Collection names
 DATABASE_NAME = "WellnessDatabase"
 COLLECTION_NAME = "Recipes"
 
 # Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi("1"))
+client = MongoClient(uri)
 
 db = client[DATABASE_NAME]
 collection = db[COLLECTION_NAME]

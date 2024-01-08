@@ -5,7 +5,7 @@ FROM python:3.11.6
 WORKDIR /app
 
 # Copy the application code and requirements file into the container
-COPY app.py utils/calculations.py requirements.txt ./
+COPY . .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt

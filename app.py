@@ -9,6 +9,10 @@ from utils.calculations import (
 )
 from bson.regex import Regex
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 
 app = Flask(__name__)
@@ -17,11 +21,10 @@ cors = CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "ht
 
 
 user_variable_name = "USERNAME"
-user = os.getenv(user_variable_name)
+user = os.environ.get(user_variable_name)
 password_variable_name = "PASSWORD"
-password = os.getenv(password_variable_name)
+password = os.environ.get(password_variable_name)
 uri = f'mongodb+srv://{user}:{password}@wellnessmate.fqctlmb.mongodb.net/?retryWrites=true&w=majority'
-
 
 # Database and Collection names
 DATABASE_NAME = "WellnessDatabase"

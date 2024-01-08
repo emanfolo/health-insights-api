@@ -3,3 +3,4 @@
 service
 /scripts
 algo.md
+.env

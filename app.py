@@ -8,25 +8,25 @@ from utils.calculations import (
     activity_multiplier,
 )
 from bson.regex import Regex
-# import os
-# from dotenv import load_dotenv
+import os
+from dotenv import load_dotenv
 
-# load_dotenv()
+load_dotenv()
 
 
 
 app = Flask(__name__)
 
-# cors = CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://wellnessmate.vercel.app", "*"]}})
-cors = CORS(app, resources={r"/*": {"origins": "*"}})
+cors = CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://wellnessmate.vercel.app", "*"]}})
 
 
 
-# user_variable_name = "USERNAME"
-# user = os.environ.get(user_variable_name)
-# password_variable_name = "PASSWORD"
-# password = os.environ.get(password_variable_name)
-uri = "mongodb+srv://emanUser:viewingPassword@wellnessmate.fqctlmb.mongodb.net/?retryWrites=true&w=majority"
+user_variable_name = "USERNAME"
+user = os.environ.get(user_variable_name)
+password_variable_name = "PASSWORD"
+password = os.environ.get(password_variable_name)
+uri = f'mongodb+srv://{user}:{password}@wellnessmate.fqctlmb.mongodb.net/?retryWrites=true&w=majority'
+
 # Database and Collection names
 DATABASE_NAME = "WellnessDatabase"
 COLLECTION_NAME = "Recipes"

@@ -8,16 +8,18 @@ from utils.calculations import (
     activity_multiplier,
 )
 from bson.regex import Regex
-import os
-from dotenv import load_dotenv
+# import os
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 
 
 app = Flask(__name__)
 
-cors = CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://wellnessmate.vercel.app"]}})
+# cors = CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://wellnessmate.vercel.app", "*"]}})
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
+
 
 
 # user_variable_name = "USERNAME"
@@ -25,7 +27,6 @@ cors = CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "ht
 # password_variable_name = "PASSWORD"
 # password = os.environ.get(password_variable_name)
 uri = "mongodb+srv://emanUser:viewingPassword@wellnessmate.fqctlmb.mongodb.net/?retryWrites=true&w=majority"
-
 # Database and Collection names
 DATABASE_NAME = "WellnessDatabase"
 COLLECTION_NAME = "Recipes"
@@ -35,6 +36,8 @@ client = MongoClient(uri)
 
 db = client[DATABASE_NAME]
 collection = db[COLLECTION_NAME]
+
+
 
 
 @app.route("/mealplan", methods=["POST"])
@@ -211,6 +214,11 @@ def get_recipe():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+@app.route("/home", methods=["GET"])
+@cross_origin()
+def home():
+    return {"hi": "home"}
 
 @app.route("/explore", methods=["GET"])
 @cross_origin()

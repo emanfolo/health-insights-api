@@ -132,7 +132,8 @@ def create_mealplan():
         user_details["excluded_foods"],
         mealplan_goals,
         breakfast_quantity,
-    )
+    ) if breakfast_quantity == 1 else []
+
     meal_choices = weighted_random_choice(
         meal_results,
         "rating",
@@ -152,8 +153,10 @@ def create_mealplan():
         snack_quantity,
     )
 
+    breakfast_response = breakfast_choice.tolist() if breakfast_quantity == 1 else []
+
     response_data = {
-        "breakfast": breakfast_choice.tolist(),
+        "breakfast": breakfast_response, 
         "meals": meal_choices.tolist(),
         "snacks": snack_choices.tolist(),
     }

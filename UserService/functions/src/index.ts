@@ -1,22 +1,40 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 
-import {onRequest} from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+admin.initializeApp();
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+export const ensureUserProfile = functions.auth
+  .user()
+  .onCreate(async (user) => {
+    const userRef = admin.firestore().doc(`users/${user.uid}`);
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+    const snapshot = await userRef.get();
 
-import * as functions from 'firebase-functions'
-import * as admin from 'firebase-admin'
+    if (!snapshot.exists) {
+      // The user document doesn't exist, so we create it.
+      // This might be the case if the client-side operation failed.
+      return userRef.set({
+        uid: user.uid,
+        displayName: user.displayName || "Anonymous",
+        photoURL:
+          user.photoURL ||
+          "https://avatars.githubusercontent.com/u/214020?s=40&v=4",
+        lastLogin: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    } else {
+      return userRef.update({
+        lastLogin: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    }
+  });
+
+export const cleanupUserData = functions.auth.user().onDelete(async (user) => {
+  const uid = user.uid;
+  try {
+    const userRef = admin.firestore().collection("users").doc(uid);
+    await userRef.delete();
+    console.log(`Deleted user data for user: ${uid}`);
+  } catch (error) {
+    console.error(`Error cleaning up user data for user: ${uid}`, error);
+  }
+});

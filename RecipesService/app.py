@@ -10,6 +10,7 @@ from utils.calculations import (
 from bson.regex import Regex
 import os
 from dotenv import load_dotenv
+from math import ceil
 
 load_dotenv()
 
@@ -241,6 +242,11 @@ def explore():
 @cross_origin()
 def search():
     search_data = request.get_json()
+    
+    # Pagination parameters
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 20))
+    skip = (page - 1) * limit
 
     # Extract search term, prep boundary, cooking boundary, calorie boundary, protein boundary, and nutri score boundary
     search_term = search_data.get("searchTerm")
@@ -257,8 +263,8 @@ def search():
     if search_term:
         # Text-based search using $text and $search
         query["$or"] = [
-            {"description": {"$regex": search_term}},
-            {"name": {"$regex": search_term}},
+            {"description": {"$regex": search_term, "$options": "i"}},
+            {"name": {"$regex": search_term, "$options": "i"}},
             # {"$text": {"$search": search_term}}  # Adding the text-based search criteria
         ]
 
@@ -282,13 +288,21 @@ def search():
     if isinstance(nutri_score_boundary, (int, float)):
         query["nutritional_score"] = {"$gte": nutri_score_boundary}
 
-    results = list(collection.find(query).limit(20))
+    total_results = collection.count_documents(query)
+    recipes_list = list(collection.find(query).skip(skip).limit(limit))
 
     # Convert ObjectId to string for JSON serialization
-    for result in results:
-        result["_id"] = str(result["_id"])
+    for recipe in recipes_list:
+        recipe["_id"] = str(recipe["_id"])
 
-    return jsonify(results)
+    total_pages = ceil(total_results / limit)
+
+    return jsonify({
+        'recipes': recipes_list,
+        'totalResults': total_results,
+        'totalPages': total_pages,
+        'currentPage': page
+    })
 
 
 # if __name__ == "__main__":

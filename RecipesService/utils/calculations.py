@@ -27,6 +27,8 @@ def calculate_normalized_protein_score(protein, kcal):
 def calculate_nutrition_score(
     carbs, fat, protein, fiber, saturates, kcal, sugars, salt
 ):
+    if (kcal < 1):
+        return 0
     # Calculate % of calories that are coming from each macro
     carbs_ratio = carbs * 4 / kcal
     fat_ratio = fat * 9 / kcal

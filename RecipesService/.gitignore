@@ -4,3 +4,4 @@ service
 /scripts
 algo.md
 .env
+.pytest_cache
